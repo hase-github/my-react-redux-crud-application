@@ -1,5 +1,11 @@
 import _ from "lodash";
-import { READ_EVENTS } from "../actions";
+import {
+  CREATE_EVENT,
+  READ_EVENTS,
+  READ_EVENT,
+  UPDATE_EVENT,
+  DELETE_EVENT,
+} from "../actions";
 
 export default (events = {}, action) => {
   switch (action.type) {
@@ -16,6 +22,18 @@ export default (events = {}, action) => {
       //}
 
       return _.mapKeys(action.response.data, "id");
+
+    case CREATE_EVENT:
+    case READ_EVENT:
+    case UPDATE_EVENT:
+      const data = action.response.data;
+      return { ...events, [data.id]: data };
+
+    case DELETE_EVENT:
+      //console.log(action.id);
+      delete events[action.id]; //オブジェクトからキーに紐づくプロパティを削除する
+      return events; //講座ではreturn { ...events } としていたが、これでも動くぞ？
+
     default:
       return events;
   }
